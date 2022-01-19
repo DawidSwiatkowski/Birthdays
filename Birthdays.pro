@@ -11,11 +11,13 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     main_window.cpp \
+    sort_proxy_model.cpp \
     sql_query_model.cpp
 
 HEADERS += \
     defines.hpp \
     main_window.hpp \
+    sort_proxy_model.hpp \
     sql_query_model.hpp
 
 FORMS += \

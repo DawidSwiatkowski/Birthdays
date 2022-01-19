@@ -3,10 +3,12 @@
 
 #include "defines.hpp"
 #include "sql_query_model.hpp"
+#include "sort_proxy_model.hpp"
 
 #include <QDebug>
 #include <QDir>
 #include <QSqlQuery>
+#include <QSortFilterProxyModel>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -15,19 +17,29 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->setupUi(this);
 
 	m_database = QSqlDatabase::addDatabase("QSQLITE");
+
 	m_database.setDatabaseName(
 				  qApp->applicationDirPath()
 				+ QDir::separator()
-				+ Birthdays::DatabaseName );
+				+ DatabaseName );
 
 	ui->statusbar->showMessage(
 				  m_database.open()
-				? Birthdays::Message::DatabaseConnectionSuccess
-				: Birthdays::Message::DatabaseConnectionFailed
+				? Messages::DatabaseConnectionSuccess
+				: Messages::DatabaseConnectionFailed
 				);
 
-	if ( m_database.isOpen() )
-		ui->treeView->setModel( new SqlQueryModel( ui->treeView ) );
+	if ( !m_database.isOpen() )
+		return;
+
+	auto sortModel = new SortProxyModel( this );
+	sortModel->setDynamicSortFilter( true );
+	sortModel->setSourceModel( new SqlQueryModel( this ) );
+	//sortModel->sort( SqlQueryModel::DaysLeft );
+
+	ui->tableView->setModel( sortModel );
+
+	ui->tableView->sortByColumn( SqlQueryModel::DaysLeft, Qt::SortOrder::AscendingOrder );
 }
 
 MainWindow::~MainWindow()

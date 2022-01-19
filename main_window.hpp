@@ -17,6 +17,5 @@ public:
 
 private:
 	Ui::MainWindow *ui;
-
 	QSqlDatabase m_database;
 };

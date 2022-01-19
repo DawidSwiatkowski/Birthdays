@@ -2,15 +2,10 @@
 
 #include <QString>
 
-namespace Birthdays
-{
-	const QString DatabaseName = "birthdays.db";
+const QString DatabaseName = "birthdays.db";
 
-namespace Message
+namespace Messages
 {
 	const QString DatabaseConnectionSuccess = "Database '" + DatabaseName + "' connected.";
 	const QString DatabaseConnectionFailed = "Database '" + DatabaseName + "' not connected!";
-}
-
-
 }
