@@ -4,6 +4,7 @@
 #include "defines.hpp"
 #include "sql_query_model.hpp"
 #include "sort_proxy_model.hpp"
+#include "column_ids.hpp"
 
 #include <QDebug>
 #include <QDir>
@@ -35,11 +36,10 @@ MainWindow::MainWindow(QWidget *parent)
 	auto sortModel = new SortProxyModel( this );
 	sortModel->setDynamicSortFilter( true );
 	sortModel->setSourceModel( new SqlQueryModel( this ) );
-	//sortModel->sort( SqlQueryModel::DaysLeft );
 
 	ui->tableView->setModel( sortModel );
 
-	ui->tableView->sortByColumn( SqlQueryModel::DaysLeft, Qt::SortOrder::AscendingOrder );
+	ui->tableView->sortByColumn( ColumnId::DaysLeft, Qt::SortOrder::AscendingOrder );
 }
 
 MainWindow::~MainWindow()

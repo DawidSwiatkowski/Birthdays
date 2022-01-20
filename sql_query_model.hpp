@@ -7,15 +7,6 @@ class SqlQueryModel
 {
 
 public:
-	enum ColumnId
-	{
-		  Date
-		, Person
-		, Year
-		, DaysLeft
-	};
-
-public:
 	SqlQueryModel( QObject* _parent = nullptr );
 
 public:

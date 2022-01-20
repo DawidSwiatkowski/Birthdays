@@ -15,6 +15,7 @@ SOURCES += \
     sql_query_model.cpp
 
 HEADERS += \
+    column_ids.hpp \
     defines.hpp \
     main_window.hpp \
     sort_proxy_model.hpp \
@@ -27,3 +28,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32:RC_ICONS += icon.ico

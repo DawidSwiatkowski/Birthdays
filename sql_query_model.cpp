@@ -1,8 +1,10 @@
 #include "sql_query_model.hpp"
+#include "column_ids.hpp"
 
 #include <QDebug>
 #include <QDate>
 #include <QLocale>
+#include <QSqlRecord>
 
 SqlQueryModel::SqlQueryModel(QObject* _parent )
 	: QSqlQueryModel( _parent )
@@ -24,39 +26,48 @@ SqlQueryModel::data( QModelIndex const& _index, int _role) const
 	if ( !_index.isValid() )
 		  return QVariant();
 
-	if ( _role != Qt::DisplayRole )
-		return QSqlQueryModel::data( _index, _role );
-
 	auto getBirthdayDate
 			= [ this, &_index, &_role ]
 			{
-				QVariant sqlDate = QSqlQueryModel::data( index( _index.row(), ColumnId::Date ), _role );
-				return QDate::fromString( sqlDate.toString(), "yyyy-MM-dd" );
+				return QDate::fromString(
+							  record( _index.row() ).value( ColumnId::Date ).toString()
+							, "yyyy-MM-dd"
+							);
 			};
 
-	switch ( _index.column() )
+	if ( _role == Qt::DisplayRole )
 	{
-		case ColumnId::Date:
-			return QVariant( QLocale( QLocale::Polish, QLocale::Poland ).toString( getBirthdayDate(), "dd MMMM") );
-
-		case ColumnId::Year:
-			return QVariant( getBirthdayDate().year() );
-
-		case ColumnId::DaysLeft:
+		switch ( _index.column() )
 		{
-			QDate currentDate( QDate::currentDate() );
+			case ColumnId::Date:
+				return QVariant( QLocale( QLocale::Polish, QLocale::Poland ).toString( getBirthdayDate(), "dd MMMM") );
 
-			QDate date = getBirthdayDate();
-			date.setDate( currentDate.year(), date.month(), date.day() );
+			case ColumnId::Year:
+				return QVariant( getBirthdayDate().year() );
 
-			auto daysToBirthday
-					= date > currentDate
-					? currentDate.daysTo( date )
-					: date.daysTo( currentDate )
-					;
+			case ColumnId::DaysLeft:
+			{
+				QDate currentDate( QDate::currentDate() );
 
-			return QVariant( daysToBirthday );
+				QDate date = getBirthdayDate();
+				date.setDate( currentDate.year(), date.month(), date.day() );
 
+				auto daysToBirthday
+						= date > currentDate
+						? currentDate.daysTo( date )
+						: date.daysTo( currentDate )
+						;
+
+				return QVariant( daysToBirthday );
+			}
+		}
+	}
+	else if ( _role == Qt::UserRole )
+	{
+		switch ( _index.column() )
+		{
+			case ColumnId::Date:
+				return QVariant( getBirthdayDate() );
 		}
 	}
 
