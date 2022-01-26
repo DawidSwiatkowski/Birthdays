@@ -4,6 +4,6 @@ enum ColumnId
 {
 	  Date
 	, Person
-	, Year
+	, Age
 	, DaysLeft
 };

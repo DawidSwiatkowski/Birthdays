@@ -11,15 +11,28 @@ SortProxyModel::SortProxyModel( QObject * _parent )
 bool
 SortProxyModel::lessThan( QModelIndex const& _source_left, QModelIndex const& _source_right ) const
 {
-	if ( _source_left.column() == ColumnId::Date )
+	switch ( _source_right.column() )
 	{
-		auto leftDate = sourceModel()->data( _source_left, Qt::UserRole ).toDate();
-		auto rightDate = sourceModel()->data( _source_right, Qt::UserRole ).toDate();
+		case ColumnId::Date:
+		{
+			auto leftDate = sourceModel()->data( _source_left, Qt::UserRole ).toDate();
+			auto rightDate = sourceModel()->data( _source_right, Qt::UserRole ).toDate();
 
-		if ( leftDate.month() == rightDate.month() )
-			return leftDate.day() < rightDate.day();
+			if ( leftDate.month() == rightDate.month() )
+				return leftDate.day() < rightDate.day();
 
-		return leftDate.month() < rightDate.month();
+			return leftDate.month() < rightDate.month();
+		}
+		break;
+
+		case ColumnId::Age:
+		{
+			return
+				  sourceModel()->data( _source_left, Qt::UserRole ).toInt()
+				< sourceModel()->data( _source_right, Qt::UserRole ).toInt()
+				;
+		}
+		break;
 	}
 
 	return QSortFilterProxyModel::lessThan( _source_left, _source_right );

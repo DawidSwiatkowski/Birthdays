@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 	sortModel->setSourceModel( new SqlQueryModel( this ) );
 
 	ui->tableView->setModel( sortModel );
-
 	ui->tableView->sortByColumn( ColumnId::DaysLeft, Qt::SortOrder::AscendingOrder );
+	ui->tableView->selectRow( 0 );
 }
 
 MainWindow::~MainWindow()

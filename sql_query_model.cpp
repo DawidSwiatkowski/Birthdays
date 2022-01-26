@@ -5,18 +5,19 @@
 #include <QDate>
 #include <QLocale>
 #include <QSqlRecord>
+#include <QString>
 
 SqlQueryModel::SqlQueryModel(QObject* _parent )
 	: QSqlQueryModel( _parent )
 {
 	setQuery("SELECT born_date, name FROM People");
 
-	insertColumn( ColumnId::Year );
+	insertColumn( ColumnId::Age );
 	insertColumn( ColumnId::DaysLeft );
 
 	setHeaderData( ColumnId::Date, Qt::Horizontal, tr("Date"));
 	setHeaderData( ColumnId::Person, Qt::Horizontal, tr("Person"));
-	setHeaderData( ColumnId::Year, Qt::Horizontal, tr("Change to years"));
+	setHeaderData( ColumnId::Age, Qt::Horizontal, tr("Age"));
 	setHeaderData( ColumnId::DaysLeft, Qt::Horizontal, tr("Days left..."));
 }
 
@@ -35,6 +36,22 @@ SqlQueryModel::data( QModelIndex const& _index, int _role) const
 							);
 			};
 
+	auto getAge
+			= [ &getBirthdayDate ]() -> int
+			{
+				QDate birthdayDate = getBirthdayDate();
+				QDate currentDate = QDate::currentDate();
+
+				int offset
+					=     ( currentDate.month() < birthdayDate.month() )
+					   || ( currentDate.month() == birthdayDate.month() && currentDate.day() < birthdayDate.day() )
+					? -1
+					: 0
+					;
+
+				return currentDate.year() - birthdayDate.year() + offset;
+			};
+
 	if ( _role == Qt::DisplayRole )
 	{
 		switch ( _index.column() )
@@ -42,8 +59,15 @@ SqlQueryModel::data( QModelIndex const& _index, int _role) const
 			case ColumnId::Date:
 				return QVariant( QLocale( QLocale::Polish, QLocale::Poland ).toString( getBirthdayDate(), "dd MMMM") );
 
-			case ColumnId::Year:
-				return QVariant( getBirthdayDate().year() );
+			case ColumnId::Age:
+			{
+				QString field = QString( "%1 (%2)" )
+						.arg( getAge() )
+						.arg( getBirthdayDate().year() )
+						;
+
+				return QVariant( field );
+			}
 
 			case ColumnId::DaysLeft:
 			{
@@ -51,14 +75,10 @@ SqlQueryModel::data( QModelIndex const& _index, int _role) const
 
 				QDate date = getBirthdayDate();
 				date.setDate( currentDate.year(), date.month(), date.day() );
+				if ( date < currentDate )
+					date = date.addYears( 1 );
 
-				auto daysToBirthday
-						= date > currentDate
-						? currentDate.daysTo( date )
-						: date.daysTo( currentDate )
-						;
-
-				return QVariant( daysToBirthday );
+				return QVariant( currentDate.daysTo( date ) );
 			}
 		}
 	}
@@ -68,7 +88,14 @@ SqlQueryModel::data( QModelIndex const& _index, int _role) const
 		{
 			case ColumnId::Date:
 				return QVariant( getBirthdayDate() );
+
+			case ColumnId::Age:
+				return QVariant( getAge() );
 		}
+	}
+	else if ( _role == Qt::TextAlignmentRole )
+	{
+		return Qt::AlignCenter;
 	}
 
 	return QSqlQueryModel::data( _index, _role );
