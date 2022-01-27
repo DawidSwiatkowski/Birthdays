@@ -36,10 +36,13 @@ MainWindow::MainWindow(QWidget *parent)
 	auto sortModel = new SortProxyModel( this );
 	sortModel->setDynamicSortFilter( true );
 	sortModel->setSourceModel( new SqlQueryModel( this ) );
+	sortModel->setFilterKeyColumn( ColumnId::Person );
 
 	ui->tableView->setModel( sortModel );
 	ui->tableView->sortByColumn( ColumnId::DaysLeft, Qt::SortOrder::AscendingOrder );
 	ui->tableView->selectRow( 0 );
+
+	connect( ui->lineEdit, &QLineEdit::textChanged, sortModel, &SortProxyModel::setFilterFixedString );
 }
 
 MainWindow::~MainWindow()

@@ -6,6 +6,8 @@
 SortProxyModel::SortProxyModel( QObject * _parent )
 	: QSortFilterProxyModel( _parent )
 {
+	setFilterKeyColumn( ColumnId::Person );
+	setFilterCaseSensitivity( Qt::CaseInsensitive );
 }
 
 bool

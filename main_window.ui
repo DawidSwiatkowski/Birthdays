@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>595</width>
-    <height>584</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,20 @@
       </attribute>
      </widget>
     </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="placeholderText">
+       <string>[Person FIlter]</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -57,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>595</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -67,6 +81,9 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>tableView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
