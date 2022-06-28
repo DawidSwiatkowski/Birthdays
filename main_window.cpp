@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->tableView->setModel( sortModel );
 	ui->tableView->sortByColumn( ColumnId::DaysLeft, Qt::SortOrder::AscendingOrder );
+	ui->tableView->setColumnWidth( ColumnId::Person, 500 );
 	ui->tableView->selectRow( 0 );
 
 	connect( ui->lineEdit, &QLineEdit::textChanged, sortModel, &SortProxyModel::setFilterFixedString );
